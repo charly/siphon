@@ -18,17 +18,24 @@ Siphon is super simple and can be easily overidden. However for basic usage it h
     #books_controller.rb
     
     def collection
-      @books ||= Siphon.new(Book.scoped).with(params[:filters])
+      @books ||= Siphon.new(Book.includes(:auhtor)).
+        has_scopes({year: integer, author_name: :string}).filter(params)
     end
 
 ### Advanced Usage
+TODO: More examples
 
     # books_siphon.rb
     BookSiphon < Siphon
-    
-      def default
-        relation.paginate(:page => params[:page])
+      
+      def initialize
+        super
+        has_scopes({some: :integer, default: :boolean, scopes: nil})
       end
+    
+      # def default
+      #   relation.paginate(:page => params[:page])
+      # end
     end
 
 ## Why Siphon ?

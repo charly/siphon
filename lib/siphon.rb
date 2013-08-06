@@ -9,10 +9,18 @@ require "siphon/base"
 module Siphon
   # Your code goes here...
 
-  # def apply(args)
-  #   Base.new(args)
-  # end
+  def siphon(args)
+    @siphon = Siphon::Base.new(args)
+  end
 
-  # module_function :apply
+  def siphon_scopes
+    @siphon and @siphon.scopes
+  end
 
+
+end
+
+ActiveSupport.on_load :action_controller do
+  include Siphon
+  helper_method :siphon_scopes
 end

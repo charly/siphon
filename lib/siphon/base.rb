@@ -53,8 +53,12 @@ module Siphon
             Integer(value)
           when :boolean
             value != "false"
-          else
+          when :string
             value
+          when :none
+            nil
+          else
+            value == "nil" ? nil : value
           end
     end
 

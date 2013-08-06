@@ -14,7 +14,7 @@ module Siphon
   end
 
   def siphon_scopes
-    @siphon and @siphon.scopes
+    @siphon and Hash[ @siphon.scopes.map {|k, v| v||= "nil"; [k, v]} ]
   end
 
 

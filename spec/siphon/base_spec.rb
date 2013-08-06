@@ -24,10 +24,10 @@ describe Siphon::Base do
     it "returns self" do
       siphon = Siphon::Base.new("")
 
-      expect(siphon.has_scopes(:published)).to  eq(siphon)
+      expect(siphon.has_scopes({published: nil})).to  eq(siphon)
     end
 
-    it "registers scope_datatypes" do
+    it "sets scope_datatypes" do
       siphon = Siphon::Base.new("").has_scopes(published: :integer)
 
       expect(siphon.scope_datatypes).to eq(published: :integer)
@@ -36,71 +36,61 @@ describe Siphon::Base do
 
   describe "#filter" do
 
-    it "`sends` one params keys to an ActiveRelation" do
+    it "triggers a scope with string arg (default)" do
       relation = double
-      expect(relation).to receive(:name).with("jack").and_return(relation)
-      siphon = Siphon::Base.new(relation).has_scopes(name:nil)
+      siphon = Siphon::Base.new(relation).has_scopes(name: nil)
 
-      expect(siphon.filter(name: "jack")).to eq relation
+      expect(relation).to receive(:name).with("jack")
+
+      siphon.filter(name: "jack")
     end
 
-    it "`sends` one params keys to an ActiveRelation" do
+    it "triggers a scope with an integer arg" do
       relation = double
-      expect(relation).to receive(:age_gt).with(18).and_return(relation)
       siphon = Siphon::Base.new(relation).has_scopes(age_gt: :integer)
 
-      expect(siphon.filter(age_gt: "18")).to eq relation
+      expect(relation).to receive(:age_gt).with(18)
+
+      siphon.filter(age_gt: "18")
     end
 
-    it "`sends` one params keys to an ActiveRelation" do
+    it "triggers a scope with a boolean arg" do
       relation = double
-      expect(relation).to receive(:admin).with(false).and_return(relation)
       siphon = Siphon::Base.new(relation).has_scopes(admin: :boolean)
 
-      expect(siphon.filter(admin: "false")).to eq relation
+      expect(relation).to receive(:admin).with(false)
+
+      siphon.filter(admin: "false")
     end
 
-    it "`sends` multiple keys to an ActiveRelation" do
+    it "chains multiple scopes" do
       relation = double
-      expect(relation).to receive(:admin).with(false).and_return(relation)
-      expect(relation).to receive(:age_gt).with(18).and_return(relation)
       siphon = Siphon::Base.new(relation).has_scopes(age_gt: :integer, admin: :boolean)
 
-      expect(siphon.filter(age_gt: "18", admin: "false")).to eq relation
+      expect(relation).to receive(:admin).with(false).and_return(relation)
+      expect(relation).to receive(:age_gt).with(18).and_return(relation)
+
+      siphon.filter(age_gt: "18", admin: "false")
     end
 
+    it "chains **only** scopes defined by has_scopes" do
+      relation = double
+      siphon = Siphon::Base.new(relation).has_scopes(age_gt: :integer)
 
+      expect(relation).to receive(:age_gt)
+      expect(relation).to_not receive(:controller)
 
+      siphon.filter(age_gt: "18", controller: "books_controller")
+    end
   end
 
-
   # TESTING PRIVATE METHOD !
-  describe "#map_scope_datatypes" do
-
-    it "maps no scope value to nil" do
-      siphon = Siphon::Base.new("")
-      siphon.map_scope_datatypes({sorted: nil}, {sorted: nil}) == {sorted: nil}
-    end
-
-    it "maps default datatype string" do
-      siphon = Siphon::Base.new("")
-      siphon.map_scope_datatypes({sorted: nil}, {sorted: "name"}) == {sorted: "name"}
-    end
-
-    it "maps datatype boolean" do
-      siphon = Siphon::Base.new("")
-      siphon.map_scope_datatypes({published: :boolean}, {published: "false"}).should == {published: false}
-    end
-
-    it "maps datatype integer" do
-      siphon = Siphon::Base.new("")
-      siphon.map_scope_datatypes({age_gt: :integer}, {age_gt: "18"}).should == {age_gt: 18}
-    end
+  describe "PRIVATE !! : #map_scope_datatypes" do
 
     it "maps datatype date" do
-      pending "map datatype date"
+      pending "IGNORE & DELETE if not working"
       siphon = Siphon::Base.new("")
-      siphon.map_scope_datatypes({age_gt: :integer}, {age_gt: "18"}).should == {age_gt: 18}
+      siphon.map_scope_datatypes({age_gt: "18"}, {age_gt: :integer}).should == {age_gt: 18}
     end
   end
 

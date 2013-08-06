@@ -12,7 +12,7 @@ module Siphon
     end
 
     def filter(params)
-      @scopes = map_scope_datatypes(scope_datatypes, params)
+      @scopes = map_scope_datatypes( params, scope_datatypes )
 
       scopes.each do |key, value|
         self.relation= relation.send(key, *value)
@@ -30,17 +30,18 @@ module Siphon
     # before:    Date
     #
     def has_scopes(scope_datatypes = {})
-      @scope_datatypes = scope_datatypes
+      @scope_datatypes = scope_datatypes.symbolize_keys
       self
     end
 
-  # private
+  private
     # TODO : for now we're assuming scope_datatypes is a Hash, K ?
-    def map_scope_datatypes(scope_datatypes, params)
+    def map_scope_datatypes( params, scope_datatypes )
       scope_hash = {}
 
-      scope_datatypes.each do |scope, datatype|
-        scope_hash[scope] = convert_type( params[scope], datatype )
+      params.symbolize_keys.each do |scope, value|
+        next unless scope_datatypes.has_key?(scope)
+        scope_hash[scope] = convert_type( value, scope_datatypes[scope] )
       end
 
       return scope_hash

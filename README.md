@@ -17,9 +17,9 @@ Siphon is super simple and can be easily overidden. However for basic usage it h
     ```ruby
     #books_controller.rb
     
-    def collection
+    def index
       @books ||= Siphon.new(Book.includes(:auhtor)).
-        has_scopes({year: integer, author_name: :string}).filter(params)
+                        has_scopes({year: integer, author_name: :string}).filter(params)
     end
 
 ### Advanced Usage

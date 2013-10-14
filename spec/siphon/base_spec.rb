@@ -3,7 +3,7 @@ require "spec_helper"
 class Tree
 end
 
-describe Siphon::Base do
+describe Siphon::Base, focus: true do
 
   describe "#initialize" do
 
@@ -19,79 +19,31 @@ describe Siphon::Base do
     end
   end
 
-  describe "#has_scopes" do
+  describe "#with" do
 
-    it "returns self" do
+    it "returns proxy" do
       siphon = Siphon::Base.new("")
 
-      expect(siphon.has_scopes({published: nil})).to  eq(siphon)
+      expect(siphon.with({published: nil})).to be_kind_of(Siphon::Proxy)
     end
 
-    it "sets scope_datatypes" do
-      siphon = Siphon::Base.new("").has_scopes(published: :integer)
+    it "sets params" do
+      siphon = Siphon::Base.new("").with(published: :integer)
 
-      expect(siphon.scope_datatypes).to eq(published: :integer)
-    end
-  end
-
-  describe "#filter" do
-
-    it "triggers a scope with string arg (default)" do
-      relation = double
-      siphon = Siphon::Base.new(relation).has_scopes(name: nil)
-
-      expect(relation).to receive(:name).with("jack")
-
-      siphon.filter(name: "jack")
-    end
-
-    it "triggers a scope with an integer arg" do
-      relation = double
-      siphon = Siphon::Base.new(relation).has_scopes(age_gt: :integer)
-
-      expect(relation).to receive(:age_gt).with(18)
-
-      siphon.filter(age_gt: "18")
-    end
-
-    it "triggers a scope with a boolean arg" do
-      relation = double
-      siphon = Siphon::Base.new(relation).has_scopes(admin: :boolean)
-
-      expect(relation).to receive(:admin).with(false)
-
-      siphon.filter(admin: "false")
-    end
-
-    it "chains multiple scopes" do
-      relation = double
-      siphon = Siphon::Base.new(relation).has_scopes(age_gt: :integer, admin: :boolean)
-
-      expect(relation).to receive(:admin).with(false).and_return(relation)
-      expect(relation).to receive(:age_gt).with(18).and_return(relation)
-
-      siphon.filter(age_gt: "18", admin: "false")
-    end
-
-    it "chains **only** scopes defined by has_scopes" do
-      relation = double
-      siphon = Siphon::Base.new(relation).has_scopes(age_gt: :integer)
-
-      expect(relation).to receive(:age_gt)
-      expect(relation).to_not receive(:controller)
-
-      siphon.filter(age_gt: "18", controller: "books_controller")
+      expect(siphon.params).to eq(published: :integer)
     end
   end
 
-  # TESTING PRIVATE METHOD !
-  describe "PRIVATE !! : #map_scope_datatypes" do
+  describe "#proxy" do
+    it "handles the scope calls" do
+      relation = double
+      siphon = Siphon::Base.new(relation)
 
-    it "maps datatype date" do
-      pending "IGNORE & DELETE if not working"
-      siphon = Siphon::Base.new("")
-      siphon.map_scope_datatypes({age_gt: "18"}, {age_gt: :integer}).should == {age_gt: 18}
+
+      expect(relation).to receive(:admin).with("yes").and_return(relation)
+      expect(relation).to receive(:published).with("yes").and_return(relation)
+
+      siphon.with(admin: "yes", published: "yes").admin("no").published
     end
   end
-
 end

@@ -5,6 +5,7 @@ require "active_support/core_ext"
 
 require "siphon/version"
 require "siphon/base"
+require "siphon/proxy"
 
 module Siphon
   # Your code goes here...
@@ -12,11 +13,6 @@ module Siphon
   def siphon(args)
     @siphon = Siphon::Base.new(args)
   end
-
-  def siphon_scopes
-    @siphon and Hash[ @siphon.scopes.map {|k, v| v||= "nil"; [k, v]} ]
-  end
-
 
 end
 

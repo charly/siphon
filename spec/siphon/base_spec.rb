@@ -46,4 +46,14 @@ describe Siphon::Base, focus: true do
       siphon.with(admin: "yes", published: "yes").admin("no").published
     end
   end
+
+  describe "#recall" do
+
+
+    it "registers the " do
+
+    end
+
+
+  end
 end

@@ -1,19 +1,17 @@
-#
-#
-#
 module Siphon
+  # ========
+  #   Base
+  # ========
   class Base
     attr_accessor :relation
 
     # Siphon.new(Book.scoped)
     def initialize(relation)
-      @proxy = Proxy.new(relation)
-      @relation = @proxy.relation
+      @relation = relation
     end
 
-    def with(params)
-      @proxy.params = params
-      @proxy
+    def recall
+      @recaller = Recaller.new(relation)
     end
 
   end # Base

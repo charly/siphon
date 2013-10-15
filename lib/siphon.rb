@@ -5,7 +5,7 @@ require "active_support/core_ext"
 
 require "siphon/version"
 require "siphon/base"
-require "siphon/proxy"
+require "siphon/recaller"
 
 module Siphon
   # Your code goes here...
@@ -18,5 +18,4 @@ end
 
 ActiveSupport.on_load :action_controller do
   include Siphon
-  helper_method :siphon_scopes
 end

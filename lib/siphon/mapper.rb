@@ -22,31 +22,16 @@ module Siphon
 
       params.symbolize_keys.each do |scope, value|
         next unless types.has_key?(scope)
-        scope_hash[scope] = convert_type(value, types[scope])
+        scope_hash[scope] = convert(value, types[scope])
       end
 
       return scope_hash
     end
 
-  private
-
-    def convert_type(value, type)
-      v = case type
-          when :integer
-            Integer(value)
-          when :boolean
-            value != "false"
-          when :string
-            value
-          when :none
-            nil
-          else
-            value == "nil" ? nil : value
-          end
+    def convert(value, type)
+      #Converter.new(value, type)
+      value
     end
-
-
-
 
   end
 end

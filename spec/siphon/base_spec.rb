@@ -1,9 +1,7 @@
 require "spec_helper"
 
-class Tree
-end
 
-describe Siphon::Base, focus: true do
+describe Siphon::Base do
 
   describe "#initialize" do
 
@@ -19,7 +17,7 @@ describe Siphon::Base, focus: true do
     end
   end
 
-  describe "#with" do
+  describe "#with", broken: true do
 
     it "returns proxy" do
       siphon = Siphon::Base.new("")
@@ -34,7 +32,7 @@ describe Siphon::Base, focus: true do
     end
   end
 
-  describe "#proxy" do
+  describe "#proxy", broken: true do
     it "handles the scope calls" do
       relation = double
       siphon = Siphon::Base.new(relation)
@@ -47,13 +45,27 @@ describe Siphon::Base, focus: true do
     end
   end
 
-  describe "#recall" do
+  describe "#recall", broken: true do
+    it "exposes a proxy whose method_missing will record calls to be recalled conditionally" do
+      relation = double
+      expect(relation).to receive(:admin).with("yes").and_return(relation)
+      expect(relation).to receive(:published).with("yes").and_return(relation)
 
-
-    it "registers the " do
-
+      Siphon::Base.new(relation).recall.admin("no").published.when({admin: "yes", published: "yes"})
     end
-
-
   end
+
+  describe "functional testing", broken: true  do
+    it "kinda works" do
+      relation = double
+      formobj = Formobj.new(admin: true, after: 1950, name: "")
+
+      expect(relation).to receive(:admin).with(true).and_return(relation)
+      expect(relation).to receive(:after).with(1950).and_return(relation)
+
+      Siphon::Base.new(relation).admin(false).after(1).scope(formobj)
+    end
+  end
+
+
 end

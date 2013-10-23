@@ -8,8 +8,10 @@ Gemfile.lock
 InstalledFiles
 _yardoc
 coverage
+bin/
 doc/
 lib/bundler/man
+lib/siphon/trials/
 pkg
 rdoc
 spec/reports

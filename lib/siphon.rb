@@ -1,11 +1,10 @@
 require "bundler/setup"
 
-require "active_support/core_ext"
 
 
 require "siphon/version"
 require "siphon/base"
-require "siphon/recaller"
+require "siphon/adapter"
 
 module Siphon
   # Your code goes here...

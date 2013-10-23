@@ -10,8 +10,14 @@ module Siphon
       @relation = relation
     end
 
-    def recall
-      @recaller = Recaller.new(relation)
+    def scope(formobject)
+      scopeobject = Siphon::Adapter.new(formobject).call
+
+      scopeobject.each do |meth, arg|
+        self.relation = relation.public_send(meth, arg)
+      end
+
+      relation
     end
 
   end # Base

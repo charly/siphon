@@ -19,7 +19,7 @@ module Siphon
     def call
       formobj.scopes.each do |meth, arg|
         next unless calling?( meth )
-        @adapted << [meth, formobj.public_send(meth)]
+        @adapted << [meth, arg]
       end
 
       return Hash[@adapted]

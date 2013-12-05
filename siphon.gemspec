@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "activesupport"
-  # spec.add_dependency "activesupport"
+  spec.add_dependency "virtus"
 
 
   spec.add_development_dependency "bundler", "~> 1.3"
@@ -28,5 +28,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pry"
 
   spec.add_development_dependency "activemodel"
-  spec.add_development_dependency "virtus"
+  # spec.add_development_dependency "virtus"
 end

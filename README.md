@@ -1,6 +1,7 @@
 # Siphon
 
-Siphon's a minimalistic gem which enables you to easily apply/combine/exclude your ActiveRecord scopes with params.
+Siphon's a minimalistic gem which enables you to easily and conditionnaly apply your ActiveRecord scopes with parameteres sent through the web.
+
 
 ## Installation
 
@@ -8,81 +9,83 @@ Add this line to your application's Gemfile:
 
     gem 'siphon'
 
+
 ## Usage
 
-Siphon is super simple and can be easily overidden. However for basic usage it has a couple of helpers.
+So Siphon's just a tiny convienience gem which is still quit experimental but it does its job of applying scopes to an activerecord model thanks to a formobject (using the great [virtus][1] here) containing the coerced values. 
+Here's how it works :
 
-### Basic Usage
+### The Scopes :
 
-    ```ruby
-    #books_controller.rb
-    
-    def index
-      @books ||= Siphon.new(Book.includes(:auhtor)).
-                        has_scopes({year: integer, author_name: :string}).filter(params)
+    # order.rb
+    class Order < ActiveRecord::Base
+      scope :stale, ->(duration) { where(["state='onhold' OR (state != 'done' AND updated_at < ?)", duration.ago]) }
+      scope :unpaid -> { where(paid: false) }
     end
 
-### Advanced Usage
-TODO: More examples
+### The Form :
 
-    # books_siphon.rb
-    BookSiphon < Siphon
-      
-      def initialize
-        super
-        has_scopes({some: :integer, default: :boolean, scopes: nil})
-      end
-    
-      # def default
-      #   relation.paginate(:page => params[:page])
-      # end
+    = form_for @order_form do |f|
+      = f.label :stale, "Stale since more than"
+      = f.select :stale, [["1 week", 1.week], ["3 weeks", 3.weeks], ["3 months", 3.months]], include_blank: true
+      = f.label :unpaid
+      = f.check_box :unpaid
+
+### The Form Object:
+
+    # order_form.rb
+    class OrderForm
+      include Virtus.model
+      include ActiveModel::Model
+      #
+      # attribute are the named scopes and their value are : 
+      # - either the value you pass a scope which takes arguments
+      # - either a Siphon::Nil value to apply (or not) a scope which has no argument
+      #
+      attribute :stale, Integer
+      attribute :unpaid, Siphon::Nil
     end
 
-## Why Siphon ?
 
-Thanks to Arel & ActiveRelation, Rails has an extraordinary, super powerful API to create scopes. You can chain them, merge them, pass them around, in what ever order you want, they'll just build the SQL you expect and only fire when necessary. 
+### Aaaaand... TADA siphon :
 
-However once you're in the controller all this beauty is lost if you want to start applying scopes conditionally - e.g : depending on params in the url.
-
-One way of doing it is like that :
-
-    def index
-      @results = Results.scoped
-      @results = @results.gender(params[:gender]) if params[:gender]
-      @results = @results.career(params[:career]) if params[:career]
+    # orders_controller.rb
+    def search 
+      @order_form = OrderForm.new(params[:order_form])
+      @orders = siphon(Order.all).scope(@order_form)
     end
 
-It's ugly, it doesn't scale and each time I see an `if` I hear the squeeking sound of a tree falling in the rain forest to build another Mc Donalds.
+Here's how it works : it takes an initial ActiveRelation (Order.all) and then from a FormObject (@order_form) it will apply or not a set of scopes with typecasted arguments.
 
-## Why not Has_Scope ?
 
-So what about has_scope ?
+## Advanced Usage
 
-    # books_controller.rb
-    has_scope :gender
-    has_scope :career
-    
-    def index
-      @results = apply_scopes(Results).all
-    end
+You may want to check [how to combine siphon with ransack][2]
 
-and yee it was build by the awesome José Valim. But in my taste it suffers from the same problem Paperclip and all gem which rely on configuration with hashes have : Hashitis. 
 
-    # tree_controller.rb
-    has_scope :color, :unless => :show_all_colors?
-    has_scope :only_tall, :type => :boolean, :only => :index, :if => :restrict_to_only_tall_trees?
-    has_scope :shadown_range, :default => 10, :except => [ :index, :show, :new ]
-    has_scope :root_type, :as => :root, :allow_blank => true
-    has_scope :calculate_height, :default => proc {|c| c.session[:height] || 20 }, :only => :new
+## Some Insights
 
-As soon as you reach a certain level of complexity it looks as bad as if nested ifs were crawling all over your code. That's why most of us go for CarrierWave today : because well if you need behaviour why try to invent another DSL when you already have the best at hands : RUBY !
+Siphon stands on the giant shoulder of Virtus which takes care of coercing the string values a form sends to the controller. But coercing is only solving one part of the problem. This is where siphon comes into play :
 
-* You unclutter your controllers - which I like anorexic.
-* You're not limited by the set of configuration the gem gives you.
-* you can apply as much logic as you whish 
-* It's encapsultated, unit-testable & respects SRP
+As you saw in the example a scope either takes an argument(s) or it doesn't so the idea is :
 
-Actually Siphon shouln't even be a gem but just a set of guidelines. But hey it has a cool name...
+1. either the field holds a value which is meant to be passed to the scope (like a date, a name, a duration, etc).
+2. either the scopes takes no argument and the boolean field (like a check box) only indicates if you want it applied or not.
+
+So the values have two distinctive roles .
+
+In the case of `stale` which takes a duration :
+
+    = form_for @order_form do |f|
+      = f.label :stale, "Stale since more than"
+      = f.select :stale, [["1 week", 1], ["3 weeks", 3], ["9 weeks", 9]], include_blank: true
+
+If you select a duration the scope will be called and the argument will be turned into an integer and passed as an arg.
+But if you select the blank option the value of params[:stale] will be an empty string. Siphon knows it should be an integer thanks to the formobject and concludes this means no values are passed to the scope and therefore shouldn't be called.
+
+In the case of `unpaid` siphon knows it doesn't take any argument (Siphon::Nil) and therefore only calls the scope of the field when it's not falsy ("0", "f", "false" etc).
+
+That's all!
 
 ## Contributing
 
@@ -91,3 +94,6 @@ Actually Siphon shouln't even be a gem but just a set of guidelines. But hey it 
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+[1]: https://github.com/solnic/virtus
+[2]: http:://www.coderwall.com/charly

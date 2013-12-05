@@ -96,4 +96,4 @@ That's all!
 5. Create new Pull Request
 
 [1]: https://github.com/solnic/virtus
-[2]: http:://www.coderwall.com/charly
+[2]: https://coderwall.com/p/4zz6ca

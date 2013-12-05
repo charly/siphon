@@ -3,8 +3,8 @@ module Siphon
   #   Adapter
   # ==========
   #
-  # use : determine which scope will be called &
-  #       set relevant args to nil for
+  # use : determine which scope will not be called &
+  #       set args to nil for 'argless' scopes
   #
   #
   class Adapter
@@ -22,9 +22,9 @@ module Siphon
     end
 
   private
-    # if scope is present in form but with no value (aka 'empty string')
-    # or if present in formobj but not in form  (aka : value is nil)
-    # don't apply the scope && reject from scopes_hash
+    # if scope is present in form but with no value (aka: an empty string)
+    # or if present in formobj but not in form  (aka : a nil value)
+    # don't apply the scope && reject them from scopes_hash
     def filterout_empty_string_and_nil
       @scopes_hash.delete_if { |scope, arg| ["", nil].include? @formobj[scope] }
     end

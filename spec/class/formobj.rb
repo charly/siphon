@@ -2,10 +2,11 @@ class Formobj
 
   include Virtus.model
 
-  attribute :name,  String,  default: "nabokov"
-  attribute :after, Integer, default: 1950
-  attribute :admin, Boolean, default: false
+  attribute :name,  String
+  attribute :after, Integer
+  attribute :admin, Boolean
   attribute :order, String
+  attribute :stale, Siphon::Nil
 
   attr_accessor :sinfull
 

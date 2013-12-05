@@ -1,8 +1,8 @@
 require "spec_helper"
 
 
-describe Formobj, idle: true do
-  describe "#attributes" do
+describe Formobj, idle: false do
+  describe "#attributes", idle: true do
     it "returns a hash" do
       formobj = Formobj.new(name: "proust", admin: "true", after: "1800")
 
@@ -83,4 +83,12 @@ describe Formobj, idle: true do
     end
   end
 
+  describe "#attributes with nil arg" do
+    it "will do something ???? " do
+      pending "Put this in the siphon::nil tests...."
+      formobj = Formobj.new(stale: "0")
+
+      expect(formobj.stale).to eq("")
+    end
+  end
 end

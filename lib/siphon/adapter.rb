@@ -3,43 +3,47 @@ module Siphon
   #   Adapter
   # ==========
   #
-  # use : determine which scope will be called
-  #   1. takes a formobject (aka must respond to attributes)
-  #   2. filters out empty strings, nils & ???
-  # Adapter must respond to call
-  # scope :admin, ->(bool) { where(admin: bool) }
+  # use : determine which scope will be called &
+  #       set relevant args to nil for
+  #
+  #
   class Adapter
-    attr_reader :formobj
 
     def initialize(formobj)
       @formobj = formobj
-      @adapted = []
+
+      @scopes_hash = @formobj.scopes
+      @argless = argless_list(formobj)
     end
 
     def call
-      formobj.scopes.each do |meth, arg|
-        next unless calling?( meth )
-        @adapted << [meth, arg]
-      end
-
-      return Hash[@adapted]
+      filterout_empty_string_and_nil
+      apply_nil_on_argless_scopes
     end
 
   private
-
-    def calling?(meth)
-      returned = meth && formobj.public_send(meth)
-
-      # binding.pry
-
-      case returned
-      when ""
-        false
-      when nil
-        false
-      else
-        true
-      end
+    # if scope is present in form but with no value (aka 'empty string')
+    # or if present in formobj but not in form  (aka : value is nil)
+    # don't apply the scope && reject from scopes_hash
+    def filterout_empty_string_and_nil
+      @scopes_hash.delete_if { |scope, arg| ["", nil].include? @formobj[scope] }
     end
+
+    # scope with no args are listed in @argless
+    # we loop & set their arg to nil (aka: no arg with splat)
+    # must be called AFTER filterout_empty_string_and_nil
+    def apply_nil_on_argless_scopes
+      @argless.each {|scope, v| @scopes_hash[scope]= nil if @scopes_hash[scope] }
+      @scopes_hash
+    end
+
+    # list of virtus attributes with Siphon::Nil type
+    def argless_list(formobj)
+      formobj.class.
+        attribute_set.
+        select {|a| a.class == Siphon::Nil}.
+        map(&:name)
+    end
+
   end
 end

@@ -1,40 +1,43 @@
 require "spec_helper"
 
 
-describe Siphon::Adapter, focus: false do
+describe Siphon::Adapter, focus: true do
 
-  context "when Formobject#attrinbutes returns empty strings" do
-    it "return hash withtout empty strings"  do
-      formobj     = Formobj.new(name: "proust", admin: "", after: "")
-      scopes_hash = Siphon::Adapter.new(formobj).call
+  describe "scope ->() {...}" do
+    context "when Formobject#attributes is coerced to Siphon::Nil" do
+      it "will not return the scope if the argument is false" do
+        formobj     = Formobj.new(stale: "0")
 
-      expect(scopes_hash.keys).to_not include(:admin)
+        scopes_hash = Siphon::Adapter.new(formobj).call
+        expect(scopes_hash).to eq({})
+      end
+
+      it "will return the scope with nil if the argument's true" do
+        formobj     = Formobj.new(stale: "1")
+
+        scopes_hash = Siphon::Adapter.new(formobj).call
+        expect(scopes_hash).to eq({stale: nil})
+      end
     end
   end
 
-  # context "Formobject returns nil" do
-  #   it "will return nil"  do
-  #   end
-  # end
+  describe "scope ->(args) {...}" do
+    context "when Formobject takes string values" do
+      it "will return Formobject typecasted values"  do
+        formobj = Formobj.new(after: "1950")
 
-  context "when Formobject not present", focus: true do
-    it "will return default values"  do
-      # formobj     = Formobj.new(name: "proust", admin: "", after: "")
-      # scopes_hash = Siphon::Adapter.new(formobj).call
+        scopes_hash = Siphon::Adapter.new(formobj).call
+        expect(scopes_hash).to eq(after: 1950)
+      end
+    end
 
-      # expect(scopes_hash.keys).to_not include(:admin)
+    context "when Formobject#attributes returns empty strings" do
+      it "return hash withtout empty strings"  do
+        formobj     = Formobj.new(admin: "")
+
+        scopes_hash = Siphon::Adapter.new(formobj).call
+        expect(scopes_hash.keys).to_not include(:admin)
+      end
     end
   end
-
-  context "when Formobject#attributes returns string values" do
-    it "will return typecasted values"  do
-      formobj     = Formobj.new(name: "proust", admin: "1", after: "1950")
-      scopes_hash = Siphon::Adapter.new(formobj).call
-
-      expect(scopes_hash).to eq(name: "proust", admin: true, after: 1950)
-    end
-  end
-
-
-
 end

@@ -17,43 +17,52 @@ Here's how it works :
 
 ### The Scopes :
 
-    # order.rb
-    class Order < ActiveRecord::Base
-      scope :stale, ->(duration) { where(["state='onhold' OR (state != 'done' AND updated_at < ?)", duration.ago]) }
-      scope :unpaid -> { where(paid: false) }
-    end
+```ruby
+# order.rb
+class Order < ActiveRecord::Base
+  scope :stale, ->(duration) { where(["state='onhold' OR (state != 'done' AND updated_at < ?)", duration.ago]) }
+  scope :unpaid -> { where(paid: false) }
+end
+```
 
 ### The Form :
 
-    = form_for @order_form do |f|
-      = f.label :stale, "Stale since more than"
-      = f.select :stale, [["1 week", 1.week], ["3 weeks", 3.weeks], ["3 months", 3.months]], include_blank: true
-      = f.label :unpaid
-      = f.check_box :unpaid
+```ruby
+= form_for @order_form do |f|
+  = f.label :stale, "Stale since more than"
+  = f.select :stale, [["1 week", 1.week], ["3 weeks", 3.weeks], ["3 months", 3.months]], include_blank: true
+  = f.label :unpaid
+  = f.check_box :unpaid
+```
+
 
 ### The Form Object:
 
-    # order_form.rb
-    class OrderForm
-      include Virtus.model
-      include ActiveModel::Model
-      #
-      # attribute are the named scopes and their value are : 
-      # - either the value you pass a scope which takes arguments
-      # - either a Siphon::Nil value to apply (or not) a scope which has no argument
-      #
-      attribute :stale, Integer
-      attribute :unpaid, Siphon::Nil
-    end
+```ruby
+# order_form.rb
+class OrderForm
+  include Virtus.model
+  include ActiveModel::Model
+  #
+  # attribute are the named scopes and their value are :
+  # - either the value you pass a scope which takes arguments
+  # - either a Siphon::Nil value to apply (or not) a scope which has no argument
+  #
+  attribute :stale, Integer
+  attribute :unpaid, Siphon::Nil
+end
+```
 
 
 ### Aaaaand... TADA siphon :
 
-    # orders_controller.rb
-    def search 
-      @order_form = OrderForm.new(params[:order_form])
-      @orders = siphon(Order.all).scope(@order_form)
-    end
+```ruby
+# orders_controller.rb
+def search
+  @order_form = OrderForm.new(params[:order_form])
+  @orders = siphon(Order.all).scope(@order_form)
+end
+```
 
 Here's how it works : it takes an initial ActiveRelation (Order.all) and then from a FormObject (@order_form) it will apply or not a set of scopes with typecasted arguments.
 
@@ -76,9 +85,11 @@ So the values have two distinctive roles .
 
 In the case of `stale` which takes a duration :
 
-    = form_for @order_form do |f|
-      = f.label :stale, "Stale since more than"
-      = f.select :stale, [["1 week", 1], ["3 weeks", 3], ["9 weeks", 9]], include_blank: true
+```ruby
+= form_for @order_form do |f|
+  = f.label :stale, "Stale since more than"
+  = f.select :stale, [["1 week", 1], ["3 weeks", 3], include_blank: true
+```
 
 If you select a duration the scope will be called and the argument will be turned into an integer and passed as an arg.
 But if you select the blank option the value of params[:stale] will be an empty string. Siphon knows it should be an integer thanks to the formobject and concludes this means no values are passed to the scope and therefore shouldn't be called.

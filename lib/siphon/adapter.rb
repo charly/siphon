@@ -12,7 +12,7 @@ module Siphon
     def initialize(formobj)
       @formobj = formobj
 
-      @scopes_hash = @formobj.scopes
+      @scopes_hash = @formobj.attributes
       @argless = argless_list(formobj)
     end
 

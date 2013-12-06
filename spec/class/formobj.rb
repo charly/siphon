@@ -23,7 +23,7 @@ class Formobj
   #   super()
   # end
 
-  def scopes
+  def _scopes
     attributes
   end
 

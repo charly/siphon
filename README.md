@@ -108,3 +108,7 @@ That's all!
 
 [1]: https://github.com/solnic/virtus
 [2]: https://coderwall.com/p/4zz6ca
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/charly/siphon/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+

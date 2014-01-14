@@ -98,6 +98,12 @@ In the case of `unpaid` siphon knows it doesn't take any argument (Siphon::Nil) 
 
 That's all!
 
+## Alternate Libs
+
+* [has_scope](https://github.com/plataformatec/has_scope)
+* [periscope](https://github.com/laserlemon/periscope)
+* [scoped_from](https://github.com/alexistoulotte/scoped_from)
+
 ## Contributing
 
 1. Fork it

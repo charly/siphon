@@ -4,16 +4,18 @@ class <%= class_name %>Search
   include ActiveModel::Model
   include Virtus.model
 
-  attribute :full_name, String
+  TABLE = <%= class_name %>.table_name
 
-  # attr_reader :q        # the nested ransack object
-  # attr_reader :order_by # handles your order clause
+  attribute :tree, Integer
+
+  attr_reader :q        # the nested ransack object
+  attr_reader :order_by # handles your order clause
 
   def initialize(params = {})
     @params = params || {}
     super(params)
-    # self.q= @params[:q]
-    # self.order_by= @params[:order_by]
+    self.q= @params[:q]
+    self.order_by= @params[:order_by]
   end
 
   # Example of conditionally applying search terms.
@@ -27,21 +29,22 @@ class <%= class_name %>Search
   end
 
   # Exmaple of Search Form handling order stuff (might not be the best place)
-  # def self.order_by
-  #   [['newest',"created_at DESC"],
-  #     ["oldest", "created_at"],
-  #     ["state", "state, created_at"]]
-  # end
+  def self.order_by
+    [['newest',"#{TABLE}.created_at DESC"],
+      ["oldest", "#{TABLE}.created_at"],
+      ["category", "#{TABLE}".category_id, #{TABLE}.id]
+      # ["popularity", "state, created_at"]]
+  end
 
   # Example of default ordering
-  # def order_by=( val )
-  #   @order_by = val.blank? ? "created_at DESC" : val
-  # end
+  def order_by=( val )
+    @order_by = val.blank? ? "#{TABLE}.created_at DESC" : val
+  end
 
 
-  # def q=(sub_form_hash = {})
-  #   @q = <%= class_name %>.search( sub_form_hash )
-  # end
+  def q=(sub_form_hash = {})
+    @q = <%= class_name %>.search( sub_form_hash )
+  end
 
 private
 

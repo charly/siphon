@@ -6,7 +6,9 @@ class <%= class_name %>Search
 
   TABLE = <%= class_name %>.table_name
 
-  attribute :tree, Integer
+  attribute :tree_id,   Integer
+  attribute :is_public, Boolean
+
 
   attr_reader :q        # the nested ransack object
   attr_reader :order_by # handles your order clause
@@ -32,8 +34,9 @@ class <%= class_name %>Search
   def self.order_by
     [['newest',"#{TABLE}.created_at DESC"],
       ["oldest", "#{TABLE}.created_at"],
-      ["category", "#{TABLE}".category_id, #{TABLE}.id]
-      # ["popularity", "state, created_at"]]
+      ["category", "#{TABLE}.category_id, #{TABLE}.id"]
+      # ["popularity", "sales_num DESC"]]
+    ]
   end
 
   # Example of default ordering

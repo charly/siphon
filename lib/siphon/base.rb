@@ -20,7 +20,11 @@ module Siphon
       scopes_hash = Siphon::Adapter.new(formobject).call
 
       scopes_hash.each do |meth, arg|
-        self.relation = relation.send(meth, *arg)
+        self.relation = if arg.is_a?(Array)
+          relation.send(meth, *arg)
+        else 
+          relation.send(meth, arg)
+        end
       end
 
       relation

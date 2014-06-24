@@ -1,5 +1,6 @@
 require "bundler/setup"
 
+require "active_support"
 require "active_support/core_ext"
 
 require "siphon/version"

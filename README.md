@@ -1,6 +1,6 @@
 # Siphon
 
-Siphon's a minimalistic gem which enables you to easily and conditionnaly apply your ActiveRecord scopes with parameteres sent through the web.
+Siphon's a minimalistic gem (for ruby >= 2.0) which enables you to easily and conditionnaly apply your ActiveRecord scopes with parameteres sent through the web.
 
 
 ## Installation

@@ -1,59 +1,34 @@
 # uncomment `q` lines for combining ransack with your scope search
 class <%= class_name %>Search
 
-  include ActiveModel::Model
-  include Virtus.model
+  include Siphon::Boilerplate
+  siphonize class_name
 
-  TABLE = <%= class_name %>.table_name
+  #
+  # Scope attributes
+  #
+  # attribute :tree_id,   Integer
+  # attribute :is_public, Boolean
 
-  attribute :tree_id,   Integer
-  attribute :is_public, Boolean
+  #
+  # ransack attributes
+  #
+  # ransack :category_id_eq
+  # ransack :title_cont
 
 
-  attr_reader :q        # the nested ransack object
-  attr_reader :order_by # handles your order clause
-
-  def initialize(params = {})
-    @params = params || {}
-    super(params)
-    self.q= @params[:q]
-    self.order_by= @params[:order_by]
-  end
-
-  # Example of conditionally applying search terms.
-  # def done
-  #   return false unless @params[:q]
-  #   @params[:q][:state_eq].blank? ? @done : ""
-  # end
-
-  def result
-    <%= class_name %>.scoped.order(order_by).merge(q.result).merge(siphoned)
-  end
 
   # Exmaple of Search Form handling order stuff (might not be the best place)
   def self.order_by
-    [['newest',"#{TABLE}.created_at DESC"],
-      ["oldest", "#{TABLE}.created_at"],
-      ["category", "#{TABLE}.category_id, #{TABLE}.id"]
+    [['newest',"#{table_name}.created_at DESC"],
+      ["oldest", "#{table_name}.created_at"],
+      ["category", "#{table_name}.category_id, #{table_name}.id"]
       # ["popularity", "sales_num DESC"]]
     ]
   end
 
   # Example of default ordering
   def order_by=( val )
-    @order_by = val.blank? ? "#{TABLE}.created_at DESC" : val
+    @order_by = val.blank? ? "#{table_name}.created_at DESC" : val
   end
-
-
-  def q=(sub_form_hash = {})
-    @q = <%= class_name %>.search( sub_form_hash )
-  end
-
-private
-
-  def siphoned
-    Siphon::Base.new(<%= class_name %>.scoped).scope( self )
-  end
-
-
 end

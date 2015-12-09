@@ -12,8 +12,8 @@ module Siphon
     def initialize(formobj)
       @formobj = formobj
 
-      @scopes_hash = @formobj.attributes
-      @argless = argless_list(formobj)
+      @scopes_hash = assign_scope_hashes @formobj
+      @argless     = argless_list @formobj
     end
 
     def call
@@ -22,9 +22,9 @@ module Siphon
     end
 
   private
-    # if scope is present in form but with no value (aka: an empty string)
-    # or if present in formobj but not in form  (aka : a nil value)
-    # don't apply the scope && reject them from scopes_hash
+    # Do NOT APPLY SCOPE && reject them from scopes_hash
+    # 1. if scope is present in form but with no value (aka: an empty string)
+    # 2. if present in formobj but not in form  (aka : a nil value)
     def filterout_empty_string_and_nil
       @scopes_hash.delete_if { |scope, arg| ["", nil].include? @formobj[scope] }
     end
@@ -45,5 +45,11 @@ module Siphon
         map(&:name)
     end
 
+    # if the form object has #siphon_attributes favor that one
+    # usefull to seperate ransack attributes from siphon ones
+    def assign_scope_hashes(formobj)
+      formobj.respond_to?(:siphon_attributes) ?
+        formobj.siphon_attributes : formobj.attributes
+    end
   end
 end

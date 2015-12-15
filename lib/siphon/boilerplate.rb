@@ -68,6 +68,7 @@ module Siphon
         name = model_name || "#{model}Search"
         self.model_name= ActiveModel::Name.new(self, nil, name)
         self.table_name= Asset.table_name
+        @ransack_set ||= []
       end
 
       def ransack_set
@@ -75,7 +76,6 @@ module Siphon
       end
 
       def ransack( attr, type= nil )
-        @ransack_set ||= []
         attribute attr
         @ransack_set << attr
       end

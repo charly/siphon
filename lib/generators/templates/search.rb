@@ -16,7 +16,10 @@ class <%= class_name %>Search
   # ransack :category_id_eq
   # ransack :title_cont
 
-
+  def initialize(params = {}, relation = nil)
+    super params
+    @relation = relation
+  end
 
   # Exmaple of Search Form handling order stuff (might not be the best place)
   def self.order_by

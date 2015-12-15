@@ -21,8 +21,7 @@ module Siphon
     end
 
     module InstanceMethods
-      def initialize( params = {}, relation = nil )
-        @relation||= relation
+      def initialize( params = {})
         @params = params || {}
 
         @params_ransack= @params.slice(*self.class.ransack_set)
@@ -52,7 +51,7 @@ module Siphon
       # memoized or it'll break after attributes reconciled
       def result
         @result ||= begin
-          relation = @relation.order(order_by).
+          relation = @relation.
                       merge(ransack.result).
                       merge(siphoned)
           # reconcile all params for the search form (?)

@@ -7,7 +7,7 @@ require "siphon"
 require "pry"
 
 require "virtus"
-require "active_support"
+require "active_support/all"
 require "active_model"
 require "class/formobj"
 

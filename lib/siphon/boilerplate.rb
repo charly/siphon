@@ -66,7 +66,7 @@ module Siphon
       def siphonize(model, model_name: nil, table_name: nil)
         name = model_name || "#{model}Search"
         self.model_name= ActiveModel::Name.new(self, nil, name)
-        self.table_name= Asset.table_name
+        self.table_name= model.table_name
         @ransack_set ||= []
       end
 

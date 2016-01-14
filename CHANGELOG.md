@@ -8,7 +8,8 @@
 * The ModelSearch can now respond_to `siphon_attributes`
 * Boilerplate provides all the stuff ModelSearch needs...
 * ...hence the generated ModelSearch is now minimal
+* Boilerplate also gives users a `ransack` macro to set ransack attributes 
 
-## Siphone 0.1.3
+## Siphon 0.1.3
 
 * handle time & dates arguments for scope from issue #2

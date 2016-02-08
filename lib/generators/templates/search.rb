@@ -2,7 +2,7 @@
 class <%= class_name %>Search
 
   include Siphon::Boilerplate
-  siphonize class_name
+  siphonize <%= class_mate %>
 
   #
   # Scope attributes

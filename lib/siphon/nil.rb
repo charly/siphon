@@ -5,7 +5,7 @@ module Siphon
 
     # if the value is false
     def coerce(value)
-      [nil, "", "0", "false", "f", "F"].include?(value) ? nil : 1
+      [nil, "", "0", "false", "f", "F"].include?(value) ? nil : value
     end
 
   end

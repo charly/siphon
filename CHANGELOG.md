@@ -1,3 +1,13 @@
+## Siphon 0.2.4 (Mar 2016)
+
+* Fixed scopes with no argument still sending nil !
+* Added `method: 'GET'` to simple_form_for generator.
+
+## Siphon 0.2.3 (Feb 2016)
+
+* Generator for a controller using Siphon
+* Generator for a `simple_form_for`
+
 ## Siphon 0.2.1 (Dec 2015)
 
 * Boilerplate only sets params (relation is left to the user)

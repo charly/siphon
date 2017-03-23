@@ -51,9 +51,7 @@ module Siphon
       # memoized or it'll break after attributes reconciled
       def result
         @result ||= begin
-          relation = @relation.
-                      merge(ransack.result).
-                      merge(siphoned)
+          relation = siphoned.merge(ransack.result)
           # reconcile all params for the search form (?)
           self.attributes= attributes.merge(params_ransack)
           relation

@@ -1,3 +1,10 @@
+## Siphon 0.3.0 (Sep 2018)
+
+* Rails 5 compat: convert StrongParam to regular params
+* Decouple Formobj#attributes from Form#obj#siphon_attributes
+* include Siphon::Scope instead of Boilerplate (use latter for compat)
+* Formobj.ransack takes type as well
+
 ## Siphon 0.2.4 (Mar 2016)
 
 * Fixed scopes with no argument still sending nil !
@@ -18,7 +25,7 @@
 * The ModelSearch can now respond_to `siphon_attributes`
 * Boilerplate provides all the stuff ModelSearch needs...
 * ...hence the generated ModelSearch is now minimal
-* Boilerplate also gives users a `ransack` macro to set ransack attributes 
+* Boilerplate also gives users a `ransack` macro to set ransack attributes
 
 ## Siphon 0.1.3
 

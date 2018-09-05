@@ -1,7 +1,7 @@
 # uncomment `q` lines for combining ransack with your scope search
 class <%= class_name %>Search
 
-  include Siphon::Boilerplate
+  include Siphon::Scope
   siphonize <%= class_mate %>
 
   #
@@ -21,7 +21,7 @@ class <%= class_name %>Search
     @relation = relation
   end
 
-  # Exmaple of Search Form handling order stuff (might not be the best place)
+  # Example of Search Form handling order stuff (might not be the best place)
   def self.order_by
     [['newest',"#{table_name}.created_at DESC"],
       ["oldest", "#{table_name}.created_at"],

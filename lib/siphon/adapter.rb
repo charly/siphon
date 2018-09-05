@@ -48,8 +48,7 @@ module Siphon
     # if the form object has #siphon_attributes favor that one
     # usefull to seperate ransack attributes from siphon ones
     def assign_scope_hashes(formobj)
-      formobj.respond_to?(:siphon_attributes) ?
-        formobj.siphon_attributes : formobj.attributes
+      formobj.respond_to?(:siphon_attributes) ? formobj.siphon_attributes : formobj.attributes
     end
   end
 end

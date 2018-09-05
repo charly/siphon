@@ -8,6 +8,7 @@ require "siphon/base"
 require "siphon/adapter"
 require "siphon/nil"
 require "siphon/boilerplate"
+require "siphon/scope"
 
 module Siphon
   # Your code goes here...

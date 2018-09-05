@@ -66,6 +66,4 @@ describe Siphon::Base do
       Siphon::Base.new(relation).admin(false).after(1).scope(formobj)
     end
   end
-
-
 end

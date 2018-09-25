@@ -21,7 +21,7 @@ module Siphon
 
       scopes_hash.each do |meth, arg|
         self.relation = if arg.is_a?(Array)
-          relation.send(meth, *arg)
+          arg.any? ? relation.send(meth, *arg) : relation
         elsif arg.nil?
           relation.send(meth)
         else

@@ -13,7 +13,6 @@ module Siphon
       cattr_accessor :model_name
       cattr_accessor :table_name
 
-
       attr_reader :ransack_attributes # for the Ransack object
       attr_reader :siphon_attributes # for the Siphon object
       attr_reader :order_by # handles your order clause
@@ -47,7 +46,7 @@ module Siphon
       end
 
       def ransack
-        @relation.search(ransack_attributes)
+        @relation.ransack(ransack_attributes)
       end
 
       def merge(relation)

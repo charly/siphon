@@ -36,7 +36,7 @@ module Siphon
       end
 
       def ransack
-        @relation.search( params_ransack )
+        @relation.ransack( params_ransack )
       end
 
       def merge(relation)
